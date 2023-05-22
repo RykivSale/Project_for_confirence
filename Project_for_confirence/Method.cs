@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace Project_for_confirence
 {
-    internal class Method
+    public class Method
     {
         int N, M;
-        int[,] T;
-        List<int>[] P;
-        int[,] Tcopy;
+        public int[,] T;
+        public List<int>[] P;
+        public int[,] Tcopy;
         public Method(int _N, int _M, int min, int max)
         {
             Random rnd = new Random();
@@ -38,7 +38,7 @@ namespace Project_for_confirence
             }
             Array.Copy(T, Tcopy, T.Length);
         }
-        private int Calculate() //Решение критическим путём
+        private int CalculateCP() //Решение критическим путём
         {
             for (int i = 0; i < M; i++)
             {
@@ -83,7 +83,7 @@ namespace Project_for_confirence
 
 
 
-            return Calculate();
+            return CalculateCP();
             #endregion
         }
         public int SolveCM2() //критический путь по убыванию
@@ -97,7 +97,7 @@ namespace Project_for_confirence
 
             SortFromHighToLow(ref Tcopy);
 
-            return Calculate();
+            return CalculateCP();
             #endregion
         }
         public int SolveCM3()  //критический путь по возрастанию
@@ -111,7 +111,7 @@ namespace Project_for_confirence
 
             SortFromLowToHigh(ref Tcopy);
 
-            return Calculate();
+            return CalculateCP();
             #endregion
         }
         public int SolvePashkeev() //Пашкеев по убыв
@@ -2116,7 +2116,212 @@ namespace Project_for_confirence
             Console.Write($"pmax: {maxx}\n");
             return (maxx, flagOfThirt);
         }
-        
+        public (int, int) SolveTripleKroneWithCM3() //Тройной Крон по возр
+        {
+            SolveCM3();
+            bool flag = true;
+            int flagOfThirt = 0;
+            while (flag)
+            {
+                flag = false;
+                int max = P[0].Sum();
+                int min = P[0].Sum();
+                int indexMax = 0;
+                int indexMin = 0;
+
+                for (int i = 1; i < N; i++)
+                {
+                    int x = P[i].Sum();
+                    if (max < x)
+                    {
+                        max = x;
+                        indexMax = i;
+                    }
+                    else if (min > x)
+                    {
+                        min = x;
+                        indexMin = i;
+                    }
+                }
+                int D = max - min;
+                for (int i = 0; i < P[indexMax].Count; i++)
+                {
+                    if (P[indexMax][i] < D)
+                    {
+                        flag = true;
+                        P[indexMin].Add(P[indexMax][i]);
+                        P[indexMax].RemoveAt(i);
+                        break;
+
+                    }
+                }
+            }
+            flag = true;
+
+            while (flag)
+            {
+                flag = false;
+                int max = P[0].Sum();
+                int min = P[0].Sum();
+                int indexMax = 0;
+                int indexMin = 0;
+
+                for (int i = 1; i < N; i++)
+                {
+                    int x = P[i].Sum();
+                    if (max < x)
+                    {
+                        max = x;
+                        indexMax = i;
+                    }
+                    else if (min > x)
+                    {
+                        min = x;
+                        indexMin = i;
+                    }
+                }
+                int D = max - min;
+                bool flagBreak = false;
+                for (int i = 0; i < P[indexMax].Count; i++)
+                {
+                    for (int j = 0; j < P[indexMin].Count; j++)
+                    {
+                        if (P[indexMax][i] - P[indexMin][j] < D && P[indexMax][i] - P[indexMin][j] > 0)
+                        {
+                            flag = true;
+                            var tmp = P[indexMin][j];
+                            P[indexMin][j] = P[indexMax][i];
+                            P[indexMax][i] = tmp;
+                            flagBreak = true;
+                            break;
+                        }
+                    }
+                    if (flagBreak) break;
+                }
+
+            }
+
+
+            flag = true;
+            while (flag)
+            {
+
+                flag = false;
+                SortForP(ref P);
+                int indexStartMax = N - 1;
+                for (int i = 0; i < N; i++)
+                {
+                    if (P[i].Sum() == P[indexStartMax].Sum())
+                    {
+                        indexStartMax = i;
+                        break;
+                    }
+                }
+                for (int indexMax = indexStartMax; indexMax < N; indexMax++)
+                {
+
+                    bool flagBreak = false;
+                    for (int indexAverage = 0; indexAverage < indexStartMax; indexAverage++)
+                    {
+                        int max = P[indexMax].Sum();
+                        int average = P[indexAverage].Sum();
+                        int D = max - average;
+
+                        for (int i = 0; i < P[indexMax].Count; i++)
+                        {
+                            if (P[indexMax][i] < D)
+                            {
+                                flag = true;
+                                flagOfThirt = 1;
+                                P[indexAverage].Add(P[indexMax][i]);
+                                P[indexMax].RemoveAt(i);
+                                flagBreak = true;
+                                break;
+
+                            }
+                        }
+                        if (flagBreak) break;
+                    }
+                    if (flagBreak) break;
+                }
+            }
+            flag = true;
+            while (flag)
+            {
+
+                flag = false;
+                SortForP(ref P);
+                int indexStartMax = N - 1;
+                for (int i = 0; i < N; i++)
+                {
+                    if (P[i].Sum() == P[indexStartMax].Sum())
+                    {
+                        indexStartMax = i;
+                        break;
+                    }
+                }
+                for (int indexMax = indexStartMax; indexMax < N; indexMax++)
+                {
+
+                    bool flagBreak = false;
+                    for (int indexAverage = 0; indexAverage < indexStartMax; indexAverage++)
+                    {
+                        int max = P[indexMax].Sum();
+                        int average = P[indexAverage].Sum();
+                        int D = max - average;
+
+                        for (int i = 0; i < P[indexMax].Count; i++)
+                        {
+                            for (int j = 0; j < P[indexAverage].Count; j++)
+                            {
+                                if (P[indexMax][i] - P[indexAverage][j] < D && P[indexMax][i] - P[indexAverage][j] > 0)
+                                {
+                                    flagOfThirt = 1;
+                                    flag = true;
+                                    int log = P[indexAverage].Sum();
+                                    log = P[indexMax].Sum();
+                                    var tmp = P[indexAverage][j];
+                                    P[indexAverage][j] = P[indexMax][i];
+                                    P[indexMax][i] = tmp;
+                                    log = P[indexAverage].Sum();
+                                    log = P[indexMax].Sum();
+                                    flagBreak = true;
+                                    break;
+                                }
+                            }
+                            if (flagBreak) break;
+                        }
+                        if (flagBreak) break;
+                    }
+                    if (flagBreak) break;
+
+                }
+
+
+            }
+
+            int maxx = P[0].Sum();
+            for (int i = 1; i < N; i++)
+            {
+                int x = P[i].Sum();
+                if (maxx < x)
+                {
+                    maxx = x;
+                }
+            }
+            for (int k = 0; k < N; k++)
+            {
+                Console.Write($"p{k + 1}: ");
+                for (int i = 0; i < P[k].Count; i++)
+                {
+                    Console.Write($"{P[k][i]}|");
+                }
+                Console.Write($"|Summ:{P[k].Sum()}|\n");
+
+            }
+            Console.Write($"pmax: {maxx}\n");
+            return (maxx, flagOfThirt);
+        }
         private void SortFromHighToLow(ref int[,] tasks) //сортировка по убыванию
         {
             for (var i = 1; i < M; i++)

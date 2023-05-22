@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Security.Principal;
@@ -50,7 +51,7 @@ namespace Project_for_confirence
             this.M = M;
             var randomKey = new Random();
             var randomValue = new Random();
-            Thread.Sleep(3);
+            Thread.Sleep(1);
             for (int i = 0; i < M; i++)
             {
                 genotype.Add(
@@ -71,6 +72,7 @@ namespace Project_for_confirence
             this.M = M;
             this.genotype.AddRange(genotype1);
         }
+
         public int GetMinValue()
         {
             int[] P = new int[N]; 
@@ -134,7 +136,7 @@ namespace Project_for_confirence
             
         }
         
-        public void SolveRandom()
+        public int SolveRandom()
         {
             GenerateIntervals();
 
@@ -148,6 +150,39 @@ namespace Project_for_confirence
                 Phase(counter_of_phase, history[history.Count-1].best_individual_value);
                     counter_of_phase++;
             }
+            return history[history.Count-1].best_individual_value;
+        }
+        public int SolveByT(Method method)
+        {
+            GenerateIntervals();
+
+            GenerateGenotype(method.T);
+            int counter_of_phase = 1;
+            flag = true; //Флаг необходимости выполнения
+            Phase(counter_of_phase, 0);
+            counter_of_phase++;
+            while (flag)
+            {
+                Phase(counter_of_phase, history[history.Count - 1].best_individual_value);
+                counter_of_phase++;
+            }
+            return history[history.Count - 1].best_individual_value;
+        }
+        public int SolveByP(Method method)
+        {
+            GenerateIntervals();
+
+            GenerateGenotype(method.P);
+            int counter_of_phase = 1;
+            flag = true; //Флаг необходимости выполнения
+            Phase(counter_of_phase, 0);
+            counter_of_phase++;
+            while (flag)
+            {
+                Phase(counter_of_phase, history[history.Count - 1].best_individual_value);
+                counter_of_phase++;
+            }
+            return history[history.Count - 1].best_individual_value;
         }
 
         private void GenerateGenotype()
@@ -160,6 +195,56 @@ namespace Project_for_confirence
                 Generation.Add(individual);
             }
             
+        }
+
+        private void GenerateGenotype(int[,] T)
+        {
+            Generation = new List<Individual>();
+            var rand = new Random();
+            for (int i = 0; i < k; i++)
+            {
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
+                    genotype_by_T.Add(new ValueForGenotype(T[index, 0], rand.Next(0, computer_storage), intervals));
+
+                }
+
+                var individual = new Individual(intervals, M, a, b, computer_storage,genotype_by_T);
+                Generation.Add(individual);
+            }
+
+        }
+        private void GenerateGenotype(List<int>[] P)
+        {
+            Generation = new List<Individual>();
+            var rand = new Random();
+            for (int i = 0; i < k; i++)
+            {
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
+                    int interval = 0;
+                    if (index == 0)
+                    {
+                        interval = intervals[0] / 2;
+                    }
+                    else
+                    {
+                        interval = (intervals[index] - (intervals[0] + 1)) / 2 + intervals[index - 1];
+                    }
+                    foreach (var p in P[index])
+                    {
+                        genotype_by_T.Add(new ValueForGenotype(p, interval, intervals));
+
+                    }
+
+                }
+
+                var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
+                Generation.Add(individual);
+            }
+
         }
 
         private void GenerateIntervals()
@@ -200,6 +285,10 @@ namespace Project_for_confirence
             {
                 ++counter_of_povt;
             }
+            else
+            {
+                counter_of_povt = 0;
+            }
             if (counter_of_povt==kpovtor)
             {
                 flag = false;
@@ -213,32 +302,49 @@ namespace Project_for_confirence
 
                 if (rand2.Next(0, 100) <= pk)
                 {
-                    var child = Crossover(indexOfFirstIndividual);
-                    NewGeneration.Add(child);
+                    Random rand = new Random();
+                    int indexOfSecondIndividual = rand.Next(0, k);
+                    var child = Crossover(indexOfFirstIndividual,indexOfSecondIndividual);
+                    if (child.GetMinValue() < Generation[indexOfFirstIndividual].GetMinValue())
+                    {
+                        NewGeneration[indexOfFirstIndividual] = child;
+                    }
+                    else if(child.GetMinValue() < Generation[indexOfSecondIndividual].GetMinValue())
+                    {
+                        NewGeneration[indexOfSecondIndividual] = child;
+                    }
                 }
+                else if(rand2.Next(0, 100) <= pm)
+                {
+                    Thread.Sleep(1);
+
+                    var p = NewGeneration[indexOfFirstIndividual];
+                    Mutation(ref p);
+
+                    if (p.GetMinValue() < NewGeneration[indexOfFirstIndividual].GetMinValue())
+                    {
+                        NewGeneration[indexOfFirstIndividual] = p;
+                    }
+                }
+                
             }
-            
+            Generation.Clear();
+            Generation.AddRange(NewGeneration);
 
 
-            
+
+
         }
 
-        private Individual Crossover(int indexOfFirstIndividual)
+        private Individual Crossover(int indexOfFirstIndividual, int indexOfSecondIndividual)
         {
-            Random rand = new Random();
+            
             Random rand1 = new Random();
             Random rand2 = new Random();
 
-
-
-
-            int indexOfSecondIndividual = rand.Next(0, k);
-
-
-
             int point_for_cross = rand1.Next(0, M);
 
-            Thread.Sleep(2);
+            Thread.Sleep(1);
             var genForP1 = new List<ValueForGenotype>();
             var genForP2 = new List<ValueForGenotype>();
             for (int i = 0; i < point_for_cross; i++)
@@ -289,7 +395,6 @@ namespace Project_for_confirence
             {
                 return p2;
             }
-
         }
 
         public void Mutation(ref Individual individual)
