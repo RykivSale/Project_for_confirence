@@ -13,40 +13,46 @@ namespace Project_for_confirence
             InitializeComponent();
 
             List<int> Nlist = new List<int> { 3, 4, 5 };
-            List<int> Mlist = new List<int> { 49, 149 };
+            List<int> Mlist = new List<int> { 53, 353 };
             int a = 10;
             int b = 20;
             DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();
             row.Cells[0].Value = $"{a} - {b}";
-            //row.Cells[1].Value = "GoldbergRandom";
-            row.Cells[2].Value = "Двухфазный Крон КП по убыванию";
-            row.Cells[3].Value = "Двухфазный Крон";
-            row.Cells[4].Value = "Голдберг";
-            row.Cells[5].Value = "Двухфазный Крон";
+            row.Cells[1].Value = "Голдберг случайный";
+            row.Cells[2].Value = "Голдберг пол случ, пол КП";
+            row.Cells[3].Value = "Голдберг все КП";
+            //row.Cells[4].Value = "Голдберг все КП";
+            //row.Cells[5].Value = "Двухфазный Крон";
             //row.Cells[6].Value = "Трёхфазный Крон с Коробком";
             dataGridView1.Rows.Add(row);
             foreach (var N in Nlist)
             {
                 foreach (var M in Mlist)
                 {
-
-                    dataGridView1.Rows.Add(getRow(N, M, a, b, 5));
+                    dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
                 }
             }
 
+            try
+            {
+                copyAlltoClipboard();
+                Microsoft.Office.Interop.Excel.Application xlexcel;
+                Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
+                Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
+                object misValue = System.Reflection.Missing.Value;
+                xlexcel = new Microsoft.Office.Interop.Excel.Application();
+                xlexcel.Visible = true;
+                xlWorkBook = xlexcel.Workbooks.Add(misValue);
+                xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
+                CR.Select();
+                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
-            copyAlltoClipboard();
-            Microsoft.Office.Interop.Excel.Application xlexcel;
-            Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-            object misValue = System.Reflection.Missing.Value;
-            xlexcel = new Microsoft.Office.Interop.Excel.Application();
-            xlexcel.Visible = true;
-            xlWorkBook = xlexcel.Workbooks.Add(misValue);
-            xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
-            CR.Select();
-            xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
         }
         private void copyAlltoClipboard()
         {
@@ -83,14 +89,14 @@ namespace Project_for_confirence
 
             for (int i = 0; i < Niter; i++)
             {
-                GoldbergAlg alg = new GoldbergAlg(N, M, a, b,25,99,99,15);
+                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 5);
                 Method meth = new Method(N, M, a, b);
-                result0 += meth.SolveDoubleKroneWithCM2();
+                result0 += alg.SolveWithCM(meth, 250, 83, 83, 84);
 
-                result1 += meth.SolveDoubleKrone();
+                result1 += alg.SolveByT(meth);
 
-                result2 += alg.SolveByT(meth);
-                result3 += meth.SolveCM2();
+                result2 += alg.SolveWithCM(meth, 0, 333, 33, 334);
+                //result3 += meth.SolveCM2();
                 //result4 += meth.SolveDoubleKrone();
 
                 //var tmp = meth.SolveTripleKroneWithCM2();

@@ -38,6 +38,22 @@ namespace Project_for_confirence
             }
             Array.Copy(T, Tcopy, T.Length);
         }
+        public Method(int _N, int _M, int[,] T)
+        {
+
+            N = _N;
+            M = _M;
+            this.T = T;
+            P = new List<int>[N];
+            for (int i = 0; i < N; i++)
+            {
+                P[i] = new List<int>();
+            }
+            Tcopy = new int[M, N];
+
+
+            Array.Copy(T, Tcopy, T.Length);
+        }
         private int CalculateCP() //Решение критическим путём
         {
             for (int i = 0; i < M; i++)
@@ -1428,14 +1444,14 @@ namespace Project_for_confirence
                 }
                 for (int indexMax = indexStartMax; indexMax < N; indexMax++)
                 {
-                    
+
                     bool flagBreak = false;
                     for (int indexAverage = 0; indexAverage < indexStartMax; indexAverage++)
-                    { 
+                    {
                         int max = P[indexMax].Sum();
                         int average = P[indexAverage].Sum();
                         int D = max - average;
-                        
+
                         for (int i = 0; i < P[indexMax].Count; i++)
                         {
                             for (int j = 0; j < P[indexAverage].Count; j++)
