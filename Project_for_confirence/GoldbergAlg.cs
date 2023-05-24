@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters;
 using System.Security.Principal;
 using System.Text;
@@ -138,7 +140,7 @@ namespace Project_for_confirence
 
         public int SolveWithCM(Method method, int randomCount, int CM1Count, int CM2Count, int CM3Count)
         {
-
+            history.Clear();
             GenerateIntervals();
 
             GenerateGenotypeByCM(method.T, randomCount, CM1Count, CM2Count, CM3Count);
@@ -156,6 +158,7 @@ namespace Project_for_confirence
         }
         public int SolveRandom()
         {
+            history.Clear();
             Random rnd = new Random();
 
             int[,] T = new int[M, N];
@@ -185,6 +188,7 @@ namespace Project_for_confirence
         }
         public int SolveByT(Method method)
         {
+            history.Clear();
             GenerateIntervals();
 
             GenerateGenotype(method.T);
@@ -201,6 +205,7 @@ namespace Project_for_confirence
         }
         public int SolveByP(Method method)
         {
+            history.Clear();
             GenerateIntervals();
 
             GenerateGenotype(method.P);
@@ -234,6 +239,7 @@ namespace Project_for_confirence
             var rand = new Random();
             for (int i = 0; i < k; i++)
             {
+
                 List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
                 for (int index = 0; index < M; index++)
                 {
@@ -282,91 +288,145 @@ namespace Project_for_confirence
             Generation = new List<Individual>();
             var rand = new Random();
             Method method = new Method(N, M, T);
-            method.SolveDoubleKroneWithCM1();
-            var P = method.P;
+            method.SolveCM1();
+            var P = new List<int>[N];
             for (int i = 0; i < CM1Count; i++)
             {
 
-                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
-                for (int index = 0; index < N; index++)
+                P = new List<int>[N];
+                for (int j = 0; j < N; j++)
                 {
-                    int interval = 0;
-                    if (index == 0)
+                    P[j] = new List<int>();
+                    foreach (var item in method.P[j])
                     {
-                        interval = intervals[0] / 2;
+                        P[j].Add(item);
                     }
-                    else
-                    {
-                        interval = (intervals[index] - (intervals[0] + 1)) / 2 + intervals[index - 1];
-                    }
+                }
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
 
-                    foreach (var p in P[index])
+                    for (int indexOnP = 0; indexOnP < N; indexOnP++)
                     {
-                        genotype_by_T.Add(new ValueForGenotype(p, interval, intervals));
-
+                        if (P[indexOnP].Contains(T[index, 0]))
+                        {
+                            int interval = 0;
+                            if (indexOnP == 0)
+                            {
+                                interval = intervals[0] / 2;
+                            }
+                            else
+                            {
+                                interval = (intervals[indexOnP] - (intervals[0] + 1)) / 2 + intervals[indexOnP - 1];
+                            }
+                            genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
+                            P[indexOnP].Remove(T[index, 0]);
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
 
                 }
                 var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
                 Generation.Add(individual);
+
             }
 
-            method.SolveDoubleKroneWithCM2();
-            P = method.P;
+            method.SolveCM2();
+            P = new List<int>[N];
             for (int i = 0; i < CM2Count; i++)
             {
 
-                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
-                for (int index = 0; index < N; index++)
+                P = new List<int>[N];
+                for (int j = 0; j < N; j++)
                 {
-                    int interval = 0;
-                    if (index == 0)
+                    P[j] = new List<int>();
+                    foreach (var item in method.P[j])
                     {
-                        interval = intervals[0] / 2;
+                        P[j].Add(item);
                     }
-                    else
-                    {
-                        interval = (intervals[index] - (intervals[0] + 1)) / 2 + intervals[index - 1];
-                    }
+                }
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
 
-                    foreach (var p in P[index])
+                    for (int indexOnP = 0; indexOnP < N; indexOnP++)
                     {
-                        genotype_by_T.Add(new ValueForGenotype(p, interval, intervals));
-
+                        if (P[indexOnP].Contains(T[index, 0]))
+                        {
+                            int interval = 0;
+                            if (indexOnP == 0)
+                            {
+                                interval = intervals[0] / 2;
+                            }
+                            else
+                            {
+                                interval = (intervals[indexOnP] - (intervals[0] + 1)) / 2 + intervals[indexOnP - 1];
+                            }
+                            genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
+                            P[indexOnP].Remove(T[index, 0]);
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
 
                 }
                 var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
                 Generation.Add(individual);
+
             }
 
-            method.SolveDoubleKroneWithCM3();
-            P = method.P;
+            method.SolveCM3();
+            P = new List<int>[N];
             for (int i = 0; i < CM3Count; i++)
             {
 
-                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
-                for (int index = 0; index < N; index++)
+                P = new List<int>[N];
+                for (int j = 0; j < N; j++)
                 {
-                    int interval = 0;
-                    if (index == 0)
+                    P[j] = new List<int>();
+                    foreach (var item in method.P[j])
                     {
-                        interval = intervals[0] / 2;
+                        P[j].Add(item);
                     }
-                    else
-                    {
-                        interval = (intervals[index] - (intervals[0] + 1)) / 2 + intervals[index - 1];
-                    }
+                }
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
 
-                    foreach (var p in P[index])
+                    for (int indexOnP = 0; indexOnP < N; indexOnP++)
                     {
-                        genotype_by_T.Add(new ValueForGenotype(p, interval, intervals));
-
+                        if (P[indexOnP].Contains(T[index, 0]))
+                        {
+                            int interval = 0;
+                            if (indexOnP == 0)
+                            {
+                                interval = intervals[0] / 2;
+                            }
+                            else
+                            {
+                                interval = (intervals[indexOnP] - (intervals[0] + 1)) / 2 + intervals[indexOnP - 1];
+                            }
+                            genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
+                            P[indexOnP].Remove(T[index, 0]);
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
 
                 }
                 var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
                 Generation.Add(individual);
+
             }
             for (int i = 0; i < randomCount; i++)
             {
@@ -433,8 +493,7 @@ namespace Project_for_confirence
                 return;
             }
             Random rand2 = new Random();
-            var NewGeneration = new List<Individual>();
-            NewGeneration.AddRange(Generation);
+            
             for (int indexOfFirstIndividual = 1; indexOfFirstIndividual < k; indexOfFirstIndividual++)
             {
 
@@ -445,33 +504,34 @@ namespace Project_for_confirence
                     var child = Crossover(indexOfFirstIndividual, indexOfSecondIndividual);
                     if (child.GetMinValue() < Generation[indexOfFirstIndividual].GetMinValue())
                     {
-                        NewGeneration[indexOfFirstIndividual] = child;
+                        Generation[indexOfFirstIndividual] = child;
                     }
                     else if (child.GetMinValue() < Generation[indexOfSecondIndividual].GetMinValue())
                     {
-                        NewGeneration[indexOfSecondIndividual] = child;
+                        Generation[indexOfSecondIndividual] = child;
                     }
                 }
                 else if (rand2.Next(0, 100) <= pm)
                 {
-                    Thread.Sleep(1);
+                                        
+                    var genotypeTmp = Mutation(Generation[indexOfFirstIndividual].genotype);
 
-                    var p = NewGeneration[indexOfFirstIndividual];
-                    Mutation(ref p);
-
-                    if (p.GetMinValue() < NewGeneration[indexOfFirstIndividual].GetMinValue())
+                    int[] P = new int[N];
+                    for (int i = 0; i < genotypeTmp.Count; i++)
                     {
-                        NewGeneration[indexOfFirstIndividual] = p;
+                        P[genotypeTmp[i].place_on_computer] += genotypeTmp[i].key;
+                    }
+
+                    var min_max_criteria = P.Max();
+                    
+                    if (min_max_criteria < Generation[indexOfFirstIndividual].GetMinValue())
+                    {
+                        Generation[indexOfFirstIndividual].genotype = genotypeTmp;
                     }
                 }
 
             }
-            Generation.Clear();
-            Generation.AddRange(NewGeneration);
-
-
-
-
+            
         }
 
         private Individual Crossover(int indexOfFirstIndividual, int indexOfSecondIndividual)
@@ -518,11 +578,12 @@ namespace Project_for_confirence
 
             if (rand2.Next(0, 100) <= pm)
             {
-                Mutation(ref p1);
+                p1.genotype = Mutation(p1.genotype);
             }
             if (rand2.Next(0, 100) <= pm)
             {
-                Mutation(ref p2);
+                p2.genotype = Mutation(p2.genotype);
+                p2.genotype = Mutation(p2.genotype);
             }
 
             if (p1.GetMinValue() <= p2.GetMinValue())
@@ -535,18 +596,17 @@ namespace Project_for_confirence
             }
         }
 
-        public void Mutation(ref Individual individual)
+        public List<ValueForGenotype> Mutation(List<ValueForGenotype> genotypeForMut)
         {
             Random rand = new Random();
             Random rand1 = new Random();
             int indexOfValue = rand.Next(0, M);
             int indexOfBit = rand1.Next(0, 8);
 
-            Thread.Sleep(1);
 
-            individual.genotype[indexOfValue] = new ValueForGenotype(individual.genotype[indexOfValue].key,
-                InvertBit(individual.genotype[indexOfValue].value, indexOfBit), intervals);
-
+            genotypeForMut[indexOfValue] = new ValueForGenotype(genotypeForMut[indexOfValue].key,
+                InvertBit(genotypeForMut[indexOfValue].value, indexOfBit), intervals);
+            return genotypeForMut;
         }
 
         public static int InvertBit(int value, int bit_number)

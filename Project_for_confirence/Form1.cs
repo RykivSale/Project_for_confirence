@@ -32,7 +32,6 @@ namespace Project_for_confirence
                     dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
                 }
             }
-
             try
             {
                 copyAlltoClipboard();
@@ -52,6 +51,7 @@ namespace Project_for_confirence
             {
                 MessageBox.Show(e.Message);
             }
+
 
         }
         private void copyAlltoClipboard()
@@ -89,13 +89,13 @@ namespace Project_for_confirence
 
             for (int i = 0; i < Niter; i++)
             {
-                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 5);
+                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 15);
                 Method meth = new Method(N, M, a, b);
                 result0 += alg.SolveWithCM(meth, 250, 83, 83, 84);
 
                 result1 += alg.SolveByT(meth);
 
-                result2 += alg.SolveWithCM(meth, 0, 333, 33, 334);
+                result2 += alg.SolveWithCM(meth, 0, 333, 333, 334);
                 //result3 += meth.SolveCM2();
                 //result4 += meth.SolveDoubleKrone();
 
