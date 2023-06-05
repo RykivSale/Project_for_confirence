@@ -50,11 +50,12 @@ namespace Project_for_confirence
 
             for (int i = 0; i < Niter; i++)
             {
-                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 2);
+                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 100);
                 Method meth = new Method(N, M, a, b);
-                result0 += alg.SolveWithCM(meth, 250, 83, 83, 84);
 
-                result1 += alg.SolveByT(meth);
+                result0 += alg.SolveByT(meth);
+
+                result1 += alg.SolveWithCM(meth, 250, 83, 83, 84);
 
                 result2 += alg.SolveWithCM(meth, 0, 166, 166, 168);
                 //result3 += meth.SolveCM2();
@@ -112,8 +113,8 @@ namespace Project_for_confirence
         private void button1_Click(object sender, EventArgs e)
         {
 
-            List<int> Nlist = new List<int> { 5 };
-            List<int> Mlist = new List<int> { 353 };
+            List<int> Nlist = new List<int> { 3,4,5 };
+            List<int> Mlist = new List<int> { 53, 353 };
             int a = 10;
             int b = 30;
             DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();
@@ -129,7 +130,7 @@ namespace Project_for_confirence
             {
                 foreach (var M in Mlist)
                 {
-                    dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
+                    dataGridView1.Rows.Add(getRow(N, M, a, b, 3));
                 }
             }
             try

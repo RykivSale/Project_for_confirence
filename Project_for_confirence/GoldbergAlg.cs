@@ -270,7 +270,7 @@ namespace Project_for_confirence
                     }
                     else
                     {
-                        interval = (intervals[index] - (intervals[0] + 1)) / 2 + intervals[index - 1];
+                        interval = (intervals[index] - (intervals[index - 1] + 1)) / 2 + intervals[index - 1];
                     }
                     foreach (var p in P[index])
                     {
