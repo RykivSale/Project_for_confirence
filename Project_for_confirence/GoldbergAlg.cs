@@ -36,7 +36,7 @@ namespace Project_for_confirence
     }
     public class Individual
     {
-        static int countOfIndividuals = 0;
+        public static int countOfIndividuals = 0;
         public string name;
         public List<ValueForGenotype> genotype;
         int min_max_criteria;
@@ -77,6 +77,7 @@ namespace Project_for_confirence
 
         public int GetMinValue()
         {
+            min_max_criteria = 0;
             int[] P = new int[N];
             for (int i = 0; i < genotype.Count; i++)
             {
@@ -190,6 +191,7 @@ namespace Project_for_confirence
         {
             history.Clear();
             GenerateIntervals();
+
 
             GenerateGenotype(method.T);
             int counter_of_phase = 1;
@@ -317,7 +319,7 @@ namespace Project_for_confirence
                             }
                             else
                             {
-                                interval = (intervals[indexOnP] - (intervals[0] + 1)) / 2 + intervals[indexOnP - 1];
+                                interval = (intervals[indexOnP] - (intervals[indexOnP-1] + 1)) / 2 + intervals[indexOnP - 1];
                             }
                             genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
                             P[indexOnP].Remove(T[index, 0]);
@@ -364,7 +366,7 @@ namespace Project_for_confirence
                             }
                             else
                             {
-                                interval = (intervals[indexOnP] - (intervals[0] + 1)) / 2 + intervals[indexOnP - 1];
+                                interval = (intervals[indexOnP] - (intervals[indexOnP - 1] + 1)) / 2 + intervals[indexOnP - 1];
                             }
                             genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
                             P[indexOnP].Remove(T[index, 0]);
@@ -411,7 +413,7 @@ namespace Project_for_confirence
                             }
                             else
                             {
-                                interval = (intervals[indexOnP] - (intervals[0] + 1)) / 2 + intervals[indexOnP - 1];
+                                interval = (intervals[indexOnP] - (intervals[indexOnP - 1] + 1)) / 2 + intervals[indexOnP - 1];
                             }
                             genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
                             P[indexOnP].Remove(T[index, 0]);
@@ -447,7 +449,9 @@ namespace Project_for_confirence
 
         private void GenerateIntervals()
         {
-
+            intervals.Clear();
+            Individual.countOfIndividuals = 0;
+            counter_of_povt = 0;
             int step = computer_storage / N; // шаг, на который нужно делить промежуток
 
             int end = 0; // конечное значение текущего отрезка

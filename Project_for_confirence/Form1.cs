@@ -12,45 +12,6 @@ namespace Project_for_confirence
         {
             InitializeComponent();
 
-            List<int> Nlist = new List<int> { 3, 4, 5 };
-            List<int> Mlist = new List<int> { 53, 353 };
-            int a = 10;
-            int b = 20;
-            DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();
-            row.Cells[0].Value = $"{a} - {b}";
-            row.Cells[1].Value = "Голдберг случайный";
-            row.Cells[2].Value = "Голдберг пол случ, пол КП";
-            row.Cells[3].Value = "Голдберг все КП";
-            //row.Cells[4].Value = "Голдберг все КП";
-            //row.Cells[5].Value = "Двухфазный Крон";
-            //row.Cells[6].Value = "Трёхфазный Крон с Коробком";
-            dataGridView1.Rows.Add(row);
-            foreach (var N in Nlist)
-            {
-                foreach (var M in Mlist)
-                {
-                    dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
-                }
-            }
-            try
-            {
-                copyAlltoClipboard();
-                Microsoft.Office.Interop.Excel.Application xlexcel;
-                Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-                Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-                object misValue = System.Reflection.Missing.Value;
-                xlexcel = new Microsoft.Office.Interop.Excel.Application();
-                xlexcel.Visible = true;
-                xlWorkBook = xlexcel.Workbooks.Add(misValue);
-                xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
-                CR.Select();
-                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
 
 
         }
@@ -89,13 +50,13 @@ namespace Project_for_confirence
 
             for (int i = 0; i < Niter; i++)
             {
-                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 15);
+                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 2);
                 Method meth = new Method(N, M, a, b);
                 result0 += alg.SolveWithCM(meth, 250, 83, 83, 84);
 
                 result1 += alg.SolveByT(meth);
 
-                result2 += alg.SolveWithCM(meth, 0, 333, 333, 334);
+                result2 += alg.SolveWithCM(meth, 0, 166, 166, 168);
                 //result3 += meth.SolveCM2();
                 //result4 += meth.SolveDoubleKrone();
 
@@ -151,6 +112,45 @@ namespace Project_for_confirence
         private void button1_Click(object sender, EventArgs e)
         {
 
+            List<int> Nlist = new List<int> { 5 };
+            List<int> Mlist = new List<int> { 353 };
+            int a = 10;
+            int b = 30;
+            DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();
+            row.Cells[0].Value = $"{a} - {b}";
+            row.Cells[1].Value = "Голдберг случайный";
+            row.Cells[2].Value = "Голдберг пол случ, пол КП";
+            row.Cells[3].Value = "Голдберг все КП";
+            //row.Cells[4].Value = "Голдберг все КП";
+            //row.Cells[5].Value = "Двухфазный Крон";
+            //row.Cells[6].Value = "Трёхфазный Крон с Коробком";
+            dataGridView1.Rows.Add(row);
+            foreach (var N in Nlist)
+            {
+                foreach (var M in Mlist)
+                {
+                    dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
+                }
+            }
+            try
+            {
+                copyAlltoClipboard();
+                Microsoft.Office.Interop.Excel.Application xlexcel;
+                Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
+                Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
+                object misValue = System.Reflection.Missing.Value;
+                xlexcel = new Microsoft.Office.Interop.Excel.Application();
+                xlexcel.Visible = true;
+                xlWorkBook = xlexcel.Workbooks.Add(misValue);
+                xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
+                CR.Select();
+                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)
