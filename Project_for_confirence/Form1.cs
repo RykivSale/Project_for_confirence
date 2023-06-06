@@ -50,10 +50,10 @@ namespace Project_for_confirence
 
             for (int i = 0; i < Niter; i++)
             {
-                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 5);
+                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 75);
                 Method meth = new Method(N, M, a, b);
 
-                //result0 += alg.SolveByT(meth);
+                result0 += alg.SolveByT(meth);
 
                 result1 += alg.SolveWithKrone(meth, 250, 125, 125);
 
@@ -116,7 +116,7 @@ namespace Project_for_confirence
             List<int> Nlist = new List<int> { 3,4,5 };
             List<int> Mlist = new List<int> { 53, 353 };
             int a = 10;
-            int b = 30;
+            int b = 20;
             DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();
             row.Cells[0].Value = $"{a} - {b}";
             row.Cells[1].Value = "Голдберг случайный";
@@ -130,7 +130,7 @@ namespace Project_for_confirence
             {
                 foreach (var M in Mlist)
                 {
-                    dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
+                    dataGridView1.Rows.Add(getRow(N, M, a, b, 4));
                 }
             }
             try
