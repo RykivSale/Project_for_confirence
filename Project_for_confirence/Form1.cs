@@ -50,14 +50,14 @@ namespace Project_for_confirence
 
             for (int i = 0; i < Niter; i++)
             {
-                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 100);
+                GoldbergAlg alg = new GoldbergAlg(N, M, a, b, 500, 100, 100, 5);
                 Method meth = new Method(N, M, a, b);
 
-                result0 += alg.SolveByT(meth);
+                //result0 += alg.SolveByT(meth);
 
-                result1 += alg.SolveWithCM(meth, 250, 83, 83, 84);
+                result1 += alg.SolveWithKrone(meth, 250, 125, 125);
 
-                result2 += alg.SolveWithCM(meth, 0, 166, 166, 168);
+                result2 += alg.SolveWithKrone(meth, 0, 250, 250);
                 //result3 += meth.SolveCM2();
                 //result4 += meth.SolveDoubleKrone();
 
@@ -130,7 +130,7 @@ namespace Project_for_confirence
             {
                 foreach (var M in Mlist)
                 {
-                    dataGridView1.Rows.Add(getRow(N, M, a, b, 3));
+                    dataGridView1.Rows.Add(getRow(N, M, a, b, 1));
                 }
             }
             try

@@ -157,6 +157,24 @@ namespace Project_for_confirence
             return history[history.Count - 1].best_individual_value;
 
         }
+        public int SolveWithKrone(Method method, int randomCount, int DoubleKroneCount, int TripleKroneCount)
+        {
+            history.Clear();
+            GenerateIntervals();
+
+            GenerateGenotypeByKrone(method.T, randomCount, DoubleKroneCount, TripleKroneCount);
+            int counter_of_phase = 1;
+            flag = true; //Флаг необходимости выполнения
+            Phase(counter_of_phase, 0);
+            counter_of_phase++;
+            while (flag)
+            {
+                Phase(counter_of_phase, history[history.Count - 1].best_individual_value);
+                counter_of_phase++;
+            }
+            return history[history.Count - 1].best_individual_value;
+
+        }
         public int SolveRandom()
         {
             history.Clear();
@@ -445,7 +463,121 @@ namespace Project_for_confirence
             }
 
         }
+        private void GenerateGenotypeByKrone(int[,] T, int randomCount, int DoubleKroneCount, int TripleKroneCount)
+        {
+            Generation = new List<Individual>();
+            var rand = new Random();
+            Method method = new Method(N, M, T);
+            method.SolveDoubleKrone();
+            var P = new List<int>[N];
+            for (int i = 0; i < DoubleKroneCount; i++)
+            {
 
+                P = new List<int>[N];
+                for (int j = 0; j < N; j++)
+                {
+                    P[j] = new List<int>();
+                    foreach (var item in method.P[j])
+                    {
+                        P[j].Add(item);
+                    }
+                }
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
+
+                    for (int indexOnP = 0; indexOnP < N; indexOnP++)
+                    {
+                        if (P[indexOnP].Contains(T[index, 0]))
+                        {
+                            int interval = 0;
+                            if (indexOnP == 0)
+                            {
+                                interval = intervals[0] / 2;
+                            }
+                            else
+                            {
+                                interval = (intervals[indexOnP] - (intervals[indexOnP - 1] + 1)) / 2 + intervals[indexOnP - 1];
+                            }
+                            genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
+                            P[indexOnP].Remove(T[index, 0]);
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                }
+                var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
+                Generation.Add(individual);
+
+            }
+
+            method.SolveTripleKrone();
+            P = new List<int>[N];
+            for (int i = 0; i < TripleKroneCount; i++)
+            {
+
+                P = new List<int>[N];
+                for (int j = 0; j < N; j++)
+                {
+                    P[j] = new List<int>();
+                    foreach (var item in method.P[j])
+                    {
+                        P[j].Add(item);
+                    }
+                }
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
+
+                    for (int indexOnP = 0; indexOnP < N; indexOnP++)
+                    {
+                        if (P[indexOnP].Contains(T[index, 0]))
+                        {
+                            int interval = 0;
+                            if (indexOnP == 0)
+                            {
+                                interval = intervals[0] / 2;
+                            }
+                            else
+                            {
+                                interval = (intervals[indexOnP] - (intervals[indexOnP - 1] + 1)) / 2 + intervals[indexOnP - 1];
+                            }
+                            genotype_by_T.Add(new ValueForGenotype(T[index, 0], interval, intervals));
+                            P[indexOnP].Remove(T[index, 0]);
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                }
+                var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
+                Generation.Add(individual);
+
+            }
+
+            
+            for (int i = 0; i < randomCount; i++)
+            {
+
+                List<ValueForGenotype> genotype_by_T = new List<ValueForGenotype>();
+                for (int index = 0; index < M; index++)
+                {
+                    genotype_by_T.Add(new ValueForGenotype(T[index, 0], rand.Next(0, computer_storage), intervals));
+
+                }
+
+                var individual = new Individual(intervals, M, a, b, computer_storage, genotype_by_T);
+                Generation.Add(individual);
+            }
+
+        }
 
         private void GenerateIntervals()
         {
