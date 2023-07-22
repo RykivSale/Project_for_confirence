@@ -149,9 +149,7 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "Алгоритм Голдберга",
-            "Алгоритм Крона",
-            "Алгоритм Критического пути",
-            "Алгоритм Пашкеева"});
+            "Алгоритм Крона"});
             this.comboBox1.Location = new System.Drawing.Point(670, 120);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(203, 21);
@@ -161,10 +159,8 @@
             // 
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Items.AddRange(new object[] {
-            "Алгоритм Голдберга",
             "Алгоритм Крона",
             "Алгоритм Критического пути",
-            "Алгоритм Пашкеева",
             "Случайное (классическое)"});
             this.comboBox2.Location = new System.Drawing.Point(670, 60);
             this.comboBox2.Name = "comboBox2";
@@ -187,9 +183,9 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
             this.label3.Location = new System.Drawing.Point(666, 93);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(202, 24);
+            this.label3.Size = new System.Drawing.Size(191, 24);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Основное поколение";
+            this.label3.Text = "Основной алгоритм";
             // 
             // button1
             // 
@@ -292,14 +288,14 @@
             // 
             // textBox5
             // 
-            this.textBox5.Location = new System.Drawing.Point(804, 297);
+            this.textBox5.Location = new System.Drawing.Point(804, 270);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(51, 20);
             this.textBox5.TabIndex = 16;
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(804, 271);
+            this.textBox6.Location = new System.Drawing.Point(804, 297);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(51, 20);
             this.textBox6.TabIndex = 15;
@@ -327,14 +323,14 @@
             // 
             // textBox7
             // 
-            this.textBox7.Location = new System.Drawing.Point(804, 349);
+            this.textBox7.Location = new System.Drawing.Point(804, 323);
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(51, 20);
             this.textBox7.TabIndex = 20;
             // 
             // textBox8
             // 
-            this.textBox8.Location = new System.Drawing.Point(804, 323);
+            this.textBox8.Location = new System.Drawing.Point(804, 349);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(51, 20);
             this.textBox8.TabIndex = 19;
